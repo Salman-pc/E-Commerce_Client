@@ -1,30 +1,26 @@
-import React, { useContext } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import { FaSearch, FaShoppingCart, FaUser, FaHeart } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { WishlistContext } from "../Context/WishlistContextApi";
 import { getToWhishlistApi } from "../services/allApi";
-import { useEffect } from "react";
-import { useState } from "react";
+import { SearchContext } from "../Context/SearchContextApi";
+import { useNavigate } from "react-router-dom";
 
 const Header = () => {
-  const { toggleWishlist, addwishlistResponse,deletefromwishlistResponse } = useContext(WishlistContext);
+  const { toggleWishlist, addwishlistResponse, deletefromwishlistResponse } = useContext(WishlistContext);
+  const { setSearchKeyword } = useContext(SearchContext);
+  const navigate = useNavigate();
 
+  const [searchkey, setsearchkey] = useState({ keyword: "" });
   const [wishlistItems, setwishlistItems] = useState([])
   const [user, setUser] = useState(null);
 
-  // Optional: handle search
+  // handle search
   const handleSearch = (e) => {
     e.preventDefault();
-    console.log("Search triggered");
+    setSearchKeyword(searchkey.keyword.trim());
+navigate('/home')
   };
-
-  useEffect(() => {
-    const storedUser = JSON.parse(sessionStorage.getItem("user"));
-    if (storedUser) {
-      setUser(storedUser);
-      displayallwishlist(storedUser?.id);
-    }
-  }, [addwishlistResponse,deletefromwishlistResponse]);
 
   const displayallwishlist = async (userId) => {
     try {
@@ -40,6 +36,16 @@ const Header = () => {
     }
   };
 
+  useEffect(() => {
+    const storedUser = JSON.parse(sessionStorage.getItem("user"));
+    if (storedUser) {
+      setUser(storedUser);
+      displayallwishlist(storedUser?.id);
+    }
+  }, [addwishlistResponse, deletefromwishlistResponse]);
+
+
+
   return (
     <header className="bg-blue-900 text-white py-4 shadow-md">
       <div className="container mx-auto px-6 flex items-center justify-between gap-4">
@@ -51,6 +57,7 @@ const Header = () => {
           <input
             type="text"
             placeholder="Search for products..."
+            onChange={(e) => setsearchkey({ keyword: e.target.value })}
             className="w-full px-4 py-2 rounded-l-full bg-white text-black focus:outline-none"
           />
           <button

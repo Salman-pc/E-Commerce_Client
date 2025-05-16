@@ -38,6 +38,9 @@ export const getProductsApi=async()=>{
 export const getSingleProductsApi=async(id)=>{
     return await commonApi("GET",`${serverUrl}/getsingleproduct/${id}`,'','')
 }
+export const searchBasedProductsApi=async(keyword)=>{
+    return await commonApi("GET",`${serverUrl}/search?keyword=${keyword}`,'','')
+}
 
 //
 export const addTowishlistApi=async(reqbody)=>{

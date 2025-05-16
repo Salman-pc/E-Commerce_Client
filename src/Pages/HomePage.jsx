@@ -6,13 +6,15 @@ import { FaAnglesDown } from 'react-icons/fa6';
 import AddCategory from '../Components/AddCategory';
 import AddsubCategory from '../Components/AddsubCategory';
 import AddProduct from '../Components/AddProduct';
-import { getProductsApi, getSubCategoryApi } from '../services/allApi';
+import { getProductsApi, getSubCategoryApi, searchBasedProductsApi } from '../services/allApi';
 import { useContext } from 'react';
 import { AddProductContext, AddSubCategoriesContext, GetSubCategoriesContext } from '../Context/ResponseContextApi';
+import { SearchContext } from '../Context/SearchContextApi';
 
 
 function HomePage() {
 
+    const { searchKeyword } = useContext(SearchContext);
     const { setgetsubcategoriesResponse } = useContext(GetSubCategoriesContext)
     const { addsubcategoriesResponse } = useContext(AddSubCategoriesContext)
     const { addProductresponse } = useContext(AddProductContext)
@@ -23,22 +25,25 @@ function HomePage() {
     const [selectedSubs, setSelectedSubs] = useState([]);
 
 
-    useEffect(() => {
-        getAllsubcategories()
-    }, [addsubcategoriesResponse])
-
-    useEffect(() => {
-        fetchAllProducts();
-    }, [addProductresponse]);
-
     const fetchAllProducts = async () => {
+
         try {
-            const result = await getProductsApi();
+            const result = searchKeyword
+                ? await searchBasedProductsApi(searchKeyword)
+                : await getProductsApi();
+
             if (result.status === 200) {
-                setProducts(result.data);
+                const data = Array.isArray(result.data)
+                    ? result.data
+                    : result.data?.data || [];
+                setProducts(data);
+            } else {
+                setProducts([]);
             }
+
         } catch (error) {
             console.log("Failed to fetch products:", error);
+            setProducts([]);
         }
     };
 
@@ -47,9 +52,9 @@ function HomePage() {
 
             const result = await getSubCategoryApi()
             if (result.status == 200) {
-                console.log(result.data.data, "fsfsfsdfsfs");
-                setgetsubcategoriesResponse(result.data.data)
-                setSubCategorydata(result.data)
+                const subCategories = result.data.data;
+                setgetsubcategoriesResponse(subCategories)
+                setSubCategorydata(subCategories)
             }
 
         } catch (error) {
@@ -59,7 +64,7 @@ function HomePage() {
 
     const groupByCategory = () => {
         const grouped = {};
-        subCategorydata?.data?.forEach(({ categoryName, subCategoryName }) => {
+        subCategorydata?.forEach(({ categoryName, subCategoryName }) => {
             if (!grouped[categoryName]) {
                 grouped[categoryName] = [];
             }
@@ -69,6 +74,14 @@ function HomePage() {
     };
 
     const groupedCategories = groupByCategory();
+
+    useEffect(() => {
+        getAllsubcategories()
+    }, [addsubcategoriesResponse])
+
+    useEffect(() => {
+        fetchAllProducts();
+    }, [addProductresponse, searchKeyword]);
 
     // filtering
     const handleSubCategoryFilter = (subCategoryName) => {
@@ -154,15 +167,18 @@ function HomePage() {
                         <div className='w-full '>
 
                             <div className='flex flex-wrap md:justify-start justify-center'>
-                                {filteredProducts.map((product) => (
-                                    <ProductCard
-                                        key={product._id}
-                                        id={product._id}
-                                        name={product.title}
-                                        price={product.variants?.[0]?.price}
-                                        image={product.images?.[0]}
-                                    />
-                                ))}
+
+                                {
+                                    filteredProducts.length > 0 ?
+                                        filteredProducts.map((product) => (
+                                            <ProductCard
+                                                key={product._id}
+                                                id={product._id}
+                                                name={product.title}
+                                                price={product.variants?.[0]?.price}
+                                                image={product.images?.[0]}
+                                            />
+                                        )) : <p>No products found.</p>}
 
                             </div>
                         </div>
