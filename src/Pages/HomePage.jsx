@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import Header from '../Components/Header';
 import ProductCard from '../Components/ProductCard';
 import { FaAngleDown, FaAngleRight, } from 'react-icons/fa';
-import { FaAnglesDown } from 'react-icons/fa6';
 import AddCategory from '../Components/AddCategory';
 import AddsubCategory from '../Components/AddsubCategory';
 import AddProduct from '../Components/AddProduct';
@@ -10,7 +9,6 @@ import { getProductsApi, getSubCategoryApi, searchBasedProductsApi } from '../se
 import { useContext } from 'react';
 import { AddProductContext, AddSubCategoriesContext, GetSubCategoriesContext } from '../Context/ResponseContextApi';
 import { SearchContext } from '../Context/SearchContextApi';
-
 
 function HomePage() {
 
@@ -23,7 +21,6 @@ function HomePage() {
     const [subCategorydata, setSubCategorydata] = useState([])
     const [products, setProducts] = useState([]);
     const [selectedSubs, setSelectedSubs] = useState([]);
-
 
     const fetchAllProducts = async () => {
 
@@ -40,7 +37,6 @@ function HomePage() {
             } else {
                 setProducts([]);
             }
-
         } catch (error) {
             console.log("Failed to fetch products:", error);
             setProducts([]);
@@ -56,7 +52,6 @@ function HomePage() {
                 setgetsubcategoriesResponse(subCategories)
                 setSubCategorydata(subCategories)
             }
-
         } catch (error) {
             console.log(error);
         }
@@ -98,7 +93,6 @@ function HomePage() {
         )
         : products;
 
-
     // dropdown use
     const toggleCategory = (name) => {
         setOpenCategory((prev) => ({
@@ -117,7 +111,6 @@ function HomePage() {
                     <div className="flex items-center gap-2 mb-4 text-gray-600">
                         <span className="text-sm">Home</span>
                         <FaAngleRight />
-
                     </div>
 
                     {/* Categories Filter */}
@@ -143,7 +136,6 @@ function HomePage() {
                                                     onChange={() => handleSubCategoryFilter(sub)}
                                                     checked={selectedSubs.includes(sub)}
                                                 />
-
                                                 {sub}
                                             </label>
                                         ))}
@@ -151,7 +143,6 @@ function HomePage() {
                                 )}
                             </div>
                         ))}
-
                     </div>
                 </div>
 
@@ -163,11 +154,8 @@ function HomePage() {
                         <AddProduct isActive={'addproduct'} />
                     </div>
                     <div className="w-full grid  gap-4">
-
                         <div className='w-full '>
-
                             <div className='flex flex-wrap md:justify-start justify-center'>
-
                                 {
                                     filteredProducts.length > 0 ?
                                         filteredProducts.map((product) => (
@@ -179,7 +167,6 @@ function HomePage() {
                                                 image={product.images?.[0]}
                                             />
                                         )) : <p>No products found.</p>}
-
                             </div>
                         </div>
                     </div>

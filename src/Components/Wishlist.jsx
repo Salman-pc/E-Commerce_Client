@@ -6,29 +6,28 @@ import { useState } from 'react';
 import serverUrl from '../services/serverUrl';
 import { WishlistContext } from '../Context/WishlistContextApi';
 
-function Wishlist({  onClose }) {
+function Wishlist({ onClose }) {
 
-  const {addwishlistResponse,setdeltefromwishlistResponse}=useContext(WishlistContext)
+  const { addwishlistResponse, setdeltefromwishlistResponse } = useContext(WishlistContext)
   const [wishlistItems, setwishlistItems] = useState([])
   const [user, setUser] = useState(null);
-  
 
-const displayallwishlist = async (userId) => {
-  try {
-    const result = await getToWhishlistApi(userId);
-    if (result.status === 200) {
-      setwishlistItems(result.data.data);
-    }
-    
-  } catch (error) {
-    console.error("Wishlist Error:", error);
-    alert("Failed to load wishlist");
-  }
-};
-
- const handledeleteWishlistItem = async (id) => {
+  const displayallwishlist = async (userId) => {
     try {
-      const result = await deletefromWhishlistApi(id,user.id);
+      const result = await getToWhishlistApi(userId);
+      if (result.status === 200) {
+        setwishlistItems(result.data.data);
+      }
+
+    } catch (error) {
+      console.error("Wishlist Error:", error);
+      alert("Failed to load wishlist");
+    }
+  };
+
+  const handledeleteWishlistItem = async (id) => {
+    try {
+      const result = await deletefromWhishlistApi(id, user.id);
       if (result.status === 200) {
         displayallwishlist(user.id);
         setdeltefromwishlistResponse(result)

@@ -31,8 +31,6 @@ const ProductCard = ({ name, price, image ,id}) => {
                 </div>
             </Link>
         </div >
-
-
     );
 };
 

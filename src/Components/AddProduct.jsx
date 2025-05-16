@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { useContext, useState } from 'react';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
@@ -6,19 +6,19 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 import TextField from '@mui/material/TextField';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
-import { useContext } from 'react';
 import { AddProductContext, GetSubCategoriesContext } from '../Context/ResponseContextApi';
-import { addProductsApi } from '../services/allApi';
+import { addProductsApi, EditProductApi } from '../services/allApi';
+import { useEffect } from 'react';
+import serverUrl from '../services/serverUrl';
 
-function AddProduct({ isActive }) {
+
+function AddProduct({ isActive, intildataProductdetails }) {
 
     const { getsubcategoriesResponse } = useContext(GetSubCategoriesContext)
-    const {setaddproductResponse}=useContext(AddProductContext)
+    const { setaddproductResponse } = useContext(AddProductContext)
 
-
-
-    const [open, setOpen] = React.useState(false);
-    const [formData, setFormData] = React.useState({
+    const [open, setOpen] = useState(false);
+    const [formData, setFormData] = useState({
         title: '',
         description: '',
         subCategory: '',
@@ -71,26 +71,50 @@ function AddProduct({ isActive }) {
         const headers = {
             'Content-Type': 'multipart/form-data',
         }
-
         try {
-            const result = await addProductsApi(form,headers);
-            if (result.status === 201) {
-                
+            let result;
+            if (isActive === "addproduct") {
+                // ADD
+                result = await addProductsApi(form, headers);
+            } else {
+                // EDIT
+                result = await EditProductApi(intildataProductdetails._id, form, headers)
+            }
+
+            if (result.status === 201 || result.status === 200) {
                 alert(result.data.message)
                 setaddproductResponse(result.data)
                 handleClose();
             }
             else {
-                console.log(result);
-
                 alert(result.response.data.message)
             }
-
         } catch (error) {
             console.error("Error adding product:", error);
         }
         handleClose();
     };
+
+    const handleRemoveImage = (index) => {
+        const updatedImages = [...formData.images];
+        updatedImages.splice(index, 1);
+        setFormData({ ...formData, images: updatedImages });
+    };
+
+    useEffect(() => {
+        if (intildataProductdetails) {
+            setFormData({
+                title: intildataProductdetails.title || '',
+                description: intildataProductdetails.description || '',
+                subCategory: intildataProductdetails.subCategory || '',
+                variants: intildataProductdetails.variants || [{ ram: '', price: '', qty: 1 }],
+                images: (intildataProductdetails.images || []).map(url => ({
+                    file: null,
+                    url: url, // assuming these are URLs from backend
+                })),
+            });
+        }
+    }, [intildataProductdetails]);
 
     return (
         <>
@@ -112,17 +136,19 @@ function AddProduct({ isActive }) {
                     variant=""
                     onClick={handleClickOpen}
                     sx={{
-                        backgroundColor: '',
+                        backgroundColor: '#facc18',
                         color: '#000',
-                        width: '100%'
-
+                        borderRadius: '24px',
+                        '&:hover': { backgroundColor: '#d4a406' }
                     }}
                 >
                     Edit Product
                 </Button>}
 
             <Dialog open={open} onClose={handleClose} maxWidth="sm" fullWidth>
-                <DialogTitle sx={{ textAlign: 'center' }}>Add Product</DialogTitle>
+                <DialogTitle sx={{ textAlign: 'center' }}>
+                    {isActive === "addproduct" ? "Add Product" : "Edit Product"}
+                </DialogTitle>
                 <DialogContent sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
 
                     {/* Title */}
@@ -197,7 +223,6 @@ function AddProduct({ isActive }) {
                                 </option>
                             ))}
                         </select>
-
                     </div>
 
                     {/* Description */}
@@ -212,31 +237,36 @@ function AddProduct({ isActive }) {
                     />
 
                     {/* Image Upload (max 3) */}
-                    <div className="flex flex-col gap-2">
-                        <label className="block font-medium">Upload Images (max 3)</label>
-                        <div className="flex gap-4 flex-wrap">
-                            {formData.images.map((img, idx) => (
+                    <div className="flex gap-4 flex-wrap">
+                        {formData.images.map((img, idx) => (
+                            <div key={idx} className="relative w-16 h-16">
                                 <img
-                                    key={idx}
-                                    src={img.url}
+                                    src={isActive ? img.url : `${serverUrl}/uploads/${img.url} `}
                                     alt={`uploaded-${idx}`}
-                                    className="w-16 h-16 rounded border object-cover"
+                                    className="w-full h-full rounded border object-cover"
                                 />
-                            ))}
-                            {formData.images.length < 3 && (
-                                <label className="w-16 h-16 flex items-center justify-center border-2 border-dashed rounded text-gray-500 cursor-pointer">
-                                    +
-                                    <input
-                                        type="file"
-                                        accept="image/*"
-                                        multiple
-                                        onChange={handleImageUpload}
-                                        style={{ display: 'none' }}
-                                    />
-                                </label>
-                            )}
-                        </div>
+                                <button
+                                    onClick={() => handleRemoveImage(idx)}
+                                    className="absolute top-[-8px] right-[-8px] bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs"
+                                >
+                                    ×
+                                </button>
+                            </div>
+                        ))}
+                        {formData.images.length < 3 && (
+                            <label className="w-16 h-16 flex items-center justify-center border-2 border-dashed rounded text-gray-500 cursor-pointer">
+                                +
+                                <input
+                                    type="file"
+                                    accept="image/*"
+                                    multiple
+                                    onChange={handleImageUpload}
+                                    style={{ display: 'none' }}
+                                />
+                            </label>
+                        )}
                     </div>
+
                 </DialogContent>
 
                 <DialogActions sx={{ justifyContent: 'end', pb: 4 }}>

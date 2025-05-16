@@ -12,31 +12,26 @@ import { AddCategoriesContext, AddSubCategoriesContext, GetSubCategoriesContext 
 function AddsubCategory() {
 
 
-  const {setaddsubcategoriesResponse}=useContext(AddSubCategoriesContext)
-  const {addcategoriesResponse}=useContext(AddCategoriesContext)
+  const { setaddsubcategoriesResponse } = useContext(AddSubCategoriesContext)
+  const { addcategoriesResponse } = useContext(AddCategoriesContext)
 
-  
+
   const [open, setOpen] = useState(false);
   const [categories, setcategories] = useState([])
-  const [formData, setFormData] = useState({
-    categoryName: '',
-    subCategoryName: '',
-  });
-
+  const [formData, setFormData] = useState({categoryName: '',subCategoryName: '',});
 
   // Open and close dialog
   const handleClickOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
-
 
   const getAllcategory = async () => {
     try {
       const result = await getCategoryApi()
 
       if (result.status === 200) {
-        
+
         setcategories(result.data.categories)
-        
+
       }
 
     } catch (error) {
@@ -47,19 +42,19 @@ function AddsubCategory() {
 
   // Handle form submission
   const handleSubmit = async () => {
-   
+
     try {
 
       const result = await addSubCategoryApi(formData)
       if (result.status === 201) {
-        setaddsubcategoriesResponse(result.data.data) 
+        setaddsubcategoriesResponse(result.data.data)
         alert(result.data.message)
-       
+
       }
       else {
-        
+
         alert(result.response.data.message)
-        
+
       }
     } catch (error) {
       console.log(error);

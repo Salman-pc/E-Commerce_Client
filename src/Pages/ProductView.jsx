@@ -39,19 +39,13 @@ function ProductView() {
         });
     };
 
-
-    const handleEdit = () => {
-        console.log('Editing product...');
-        // Implement modal or redirect
-    };
-
     const handleBuy = () => {
         console.log('Buying', quantity, 'unit(s) of RAM:', selectedRam);
     };
 
     const handleWishlist = async () => {
         try {
-            
+
             if (!user) {
                 alert("Please log in to use the wishlist");
                 return;
@@ -106,8 +100,6 @@ function ProductView() {
         fetchProduct();
     }, [id]);
 
-
-
     return (
         <div className='bg-white'>
             <Header />
@@ -149,7 +141,12 @@ function ProductView() {
                             <p className="text-sm text-gray-500 mb-4">
                                 Hurry up! Only {selectedVariant?.qty || 0} left in stock!
                             </p>
-
+                            <div>
+                                <p>Description:</p>
+                                <p className="text-sm text-gray-500 mb-4">
+                                    {product?.description}
+                                </p>
+                            </div>
                             {/* RAM Options */}
                             <div className="mb-4">
                                 <p className="font-medium mb-2">Ram:</p>
@@ -191,12 +188,13 @@ function ProductView() {
 
                             {/* Buttons */}
                             <div className="flex gap-4 mt-6">
-                                <button
+                                <AddProduct
+                                    intildataProductdetails={product}
                                     className="bg-yellow-400 text-black px-6 py-2 rounded-3xl hover:bg-yellow-500"
-                                    onClick={handleEdit}
+                                // onClick={handleEdit}
                                 >
-                                    Edit Product
-                                </button>
+
+                                </AddProduct>
                                 <button
                                     className="bg-yellow-400 text-black px-6 py-2 rounded-3xl hover:bg-yellow-500"
                                     onClick={handleBuy}
@@ -212,8 +210,8 @@ function ProductView() {
                                 </button>
                                 {wishlistOpen && (
                                     <Wishlist
-                                        
-                                        onClose={toggleWishlist}  
+
+                                        onClose={toggleWishlist}
                                     />
                                 )}
                             </div>

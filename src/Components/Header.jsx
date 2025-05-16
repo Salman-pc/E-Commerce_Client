@@ -1,5 +1,5 @@
 import React, { useContext, useState, useEffect } from "react";
-import { FaSearch, FaShoppingCart, FaUser, FaHeart } from "react-icons/fa";
+import { FaShoppingCart, FaHeart } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { WishlistContext } from "../Context/WishlistContextApi";
 import { getToWhishlistApi } from "../services/allApi";
@@ -19,7 +19,7 @@ const Header = () => {
   const handleSearch = (e) => {
     e.preventDefault();
     setSearchKeyword(searchkey.keyword.trim());
-navigate('/home')
+    navigate('/home')
   };
 
   const displayallwishlist = async (userId) => {
@@ -27,11 +27,8 @@ navigate('/home')
       const result = await getToWhishlistApi(userId);
       if (result.status === 200) {
         setwishlistItems(result.data.data);
-        console.log(result);
       }
-
     } catch (error) {
-      console.error("Wishlist Error:", error);
       alert("Failed to load wishlist");
     }
   };
@@ -43,8 +40,6 @@ navigate('/home')
       displayallwishlist(storedUser?.id);
     }
   }, [addwishlistResponse, deletefromwishlistResponse]);
-
-
 
   return (
     <header className="bg-blue-900 text-white py-4 shadow-md">

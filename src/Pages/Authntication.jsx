@@ -4,26 +4,14 @@ import { LoginApi, SignUpApi } from '../services/allApi';
 
 function Authentication() {
 
-
   const navigate = useNavigate()
 
-  const [isSignIn, setIsSignIn] = useState(true);
-
   // State for form data
-  const [signInData, setSignInData] = useState({
-    email: '',
-    password: '',
-  });
+  const [isSignIn, setIsSignIn] = useState(true);
+  const [signInData, setSignInData] = useState({ email: '', password: '', });
+  const [signUpData, setSignUpData] = useState({ username: '', email: '', password: '', });
 
-  const [signUpData, setSignUpData] = useState({
-    username: '',
-    email: '',
-    password: '',
-  });
-
-
-
-  const handleSignIn =async (e) => {
+  const handleSignIn = async (e) => {
     e.preventDefault();
     console.log('Sign In Data:', signInData);
     // Add authentication logic here
@@ -31,26 +19,21 @@ function Authentication() {
       const result = await LoginApi(signInData)
 
       if (result.status === 201) {
-        console.log(result);
-
         sessionStorage.setItem("user", JSON.stringify(result.data.user));
         sessionStorage.setItem("token", result.data.token);
         navigate('/home');
       }
       else {
-        console.log(result);
-
         alert(result.response.data)
       }
     } catch (error) {
       console.log(error);
-
     }
   };
 
   const handleSignUp = async (e) => {
     e.preventDefault();
-   
+
     // Add registration logic here
     try {
       const result = await SignUpApi(signUpData)

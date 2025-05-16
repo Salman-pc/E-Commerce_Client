@@ -34,24 +34,19 @@ function AddCategory() {
       const result = await addCategoryApi(category)
       if (result.status === 201) {
 
-
         setaddcategoriesResponse(result.data)
         alert(result.data.message)
 
       }
       else {
-
         alert(result.response.data.message)
       }
-
-
       setTimeout(() => {
         setLoading(false);
         handleClose(); // Close the dialog and reset
       }, 2000);
     } catch (error) {
       setLoading(false);
-
     }
   };
 
@@ -60,11 +55,7 @@ function AddCategory() {
       <Button
         onClick={handleClickOpen}
         sx={{
-          backgroundColor: '#eab308',
-          color: '#000',
-          px: 3,
-          py: 1,
-          borderRadius: 2,
+          backgroundColor: '#eab308', color: '#000', px: 3, py: 1, borderRadius: 2,
           '&:hover': {
             backgroundColor: '#d4a106',
           },
@@ -81,8 +72,7 @@ function AddCategory() {
         fullWidth
         PaperProps={{
           style: {
-            borderRadius: 12,
-            padding: '20px',
+            borderRadius: 12, padding: '20px',
           },
         }}
       >
@@ -97,12 +87,7 @@ function AddCategory() {
             value={category.categoryName}
             onChange={(e) => setCategory({ categoryName: e.target.value })}
             style={{
-              width: '100%',
-              padding: '12px',
-              marginTop: '12px',
-              borderRadius: '8px',
-              border: '1px solid #ccc',
-              fontSize: '16px',
+              width: '100%', padding: '12px', marginTop: '12px', borderRadius: '8px', border: '1px solid #ccc', fontSize: '16px',
             }}
           />
 

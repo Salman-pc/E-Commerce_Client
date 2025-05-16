@@ -1,8 +1,7 @@
 import commonApi from "./commonApi";
 import serverUrl from "./serverUrl";
 
-
-// usser realted API
+// usser Auth realted API
 
 export const SignUpApi=async(reqbody)=>{
     return await commonApi("POST",`${serverUrl}/usersignup`,reqbody,"")
@@ -38,6 +37,11 @@ export const getProductsApi=async()=>{
 export const getSingleProductsApi=async(id)=>{
     return await commonApi("GET",`${serverUrl}/getsingleproduct/${id}`,'','')
 }
+// edit product
+export const EditProductApi = (id, reqbody, reqheader) => {
+  return commonApi("PUT",`${serverUrl}/editproduct/${id}`, reqbody,reqheader);
+};
+// search product
 export const searchBasedProductsApi=async(keyword)=>{
     return await commonApi("GET",`${serverUrl}/search?keyword=${keyword}`,'','')
 }
