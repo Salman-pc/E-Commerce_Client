@@ -6,7 +6,7 @@ import serverUrl from '../services/serverUrl';
 const ProductCard = ({ name, price, image ,id}) => {
     return (
 
-        <div className="border h-[340px] border-gray-200 rounded-2xl w-72 m-4 shadow-md bg-white">
+        <div className="border h-[340px] border-gray-200 rounded-2xl lg:w-[20%] md:w-[25%] w-[40%] m-4 shadow-md bg-white">
             <Link to={`/ProductView/${id}`} className='w-fit'>
                 <div className="p-4 text-center relative">
                     <div className='w-10 absolute top-6 right-5 flex justify-center items-center rounded-full bg-sky-200 h-10'>
@@ -15,7 +15,7 @@ const ProductCard = ({ name, price, image ,id}) => {
                     <img
                         src={`${serverUrl}/uploads/${image}` || "https://via.placeholder.com/200x150"}
                         alt={name}
-                        className="mx-auto border w-64 h-48 object-contain"
+                        className="mx-auto border w-[95%] lg:h-48 h-42  object-contain"
                     />
                 </div>
                 <div className="p-4 pt-1">

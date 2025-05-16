@@ -9,6 +9,8 @@ import { getProductsApi, getSubCategoryApi, searchBasedProductsApi } from '../se
 import { useContext } from 'react';
 import { AddProductContext, AddSubCategoriesContext, GetSubCategoriesContext } from '../Context/ResponseContextApi';
 import { SearchContext } from '../Context/SearchContextApi';
+import ProductPagination from '../Components/ProductPagination';
+
 
 function HomePage() {
 
@@ -16,11 +18,28 @@ function HomePage() {
     const { setgetsubcategoriesResponse } = useContext(GetSubCategoriesContext)
     const { addsubcategoriesResponse } = useContext(AddSubCategoriesContext)
     const { addProductresponse } = useContext(AddProductContext)
+    const itemsPerPage = 6;
 
     const [openCategory, setOpenCategory] = useState({});
     const [subCategorydata, setSubCategorydata] = useState([])
     const [products, setProducts] = useState([]);
     const [selectedSubs, setSelectedSubs] = useState([]);
+    const [currentPage, setCurrentPage] = useState(1);
+
+    const filteredProducts = selectedSubs.length
+        ? products.filter((product) =>
+            selectedSubs.includes(product.subCategory)
+        )
+        : products;
+
+    // pagination
+    const indexOfLastItem = currentPage * itemsPerPage;
+    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+    const currentItems = filteredProducts.slice(indexOfFirstItem, indexOfLastItem);
+
+    const handlePageChange = (event, value) => {
+        setCurrentPage(value);
+    };
 
     const fetchAllProducts = async () => {
 
@@ -70,13 +89,6 @@ function HomePage() {
 
     const groupedCategories = groupByCategory();
 
-    useEffect(() => {
-        getAllsubcategories()
-    }, [addsubcategoriesResponse])
-
-    useEffect(() => {
-        fetchAllProducts();
-    }, [addProductresponse, searchKeyword]);
 
     // filtering
     const handleSubCategoryFilter = (subCategoryName) => {
@@ -87,11 +99,20 @@ function HomePage() {
         );
     };
 
-    const filteredProducts = selectedSubs.length
-        ? products.filter((product) =>
-            selectedSubs.includes(product.subCategory)
-        )
-        : products;
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [filteredProducts]);
+
+
+    useEffect(() => {
+        getAllsubcategories()
+    }, [addsubcategoriesResponse])
+
+    useEffect(() => {
+        fetchAllProducts();
+    }, [addProductresponse, searchKeyword]);
+
+
 
     // dropdown use
     const toggleCategory = (name) => {
@@ -106,7 +127,7 @@ function HomePage() {
 
             <div className="flex flex-col md:flex-row  gap-6">
                 {/* Sidebar */}
-                <div className="w-full md:w-1/5 md:h-screen bg-gray-100 p-4 rounded-lg shadow-sm">
+                <div className="w-full md:w-1/5 md:min-h-screen bg-gray-100 p-4 rounded-lg shadow-sm">
                     {/* Breadcrumb */}
                     <div className="flex items-center gap-2 mb-4 text-gray-600">
                         <span className="text-sm">Home</span>
@@ -155,18 +176,29 @@ function HomePage() {
                     </div>
                     <div className="w-full grid  gap-4">
                         <div className='w-full '>
-                            <div className='flex flex-wrap md:justify-start justify-center'>
+                            <div className=''>
                                 {
                                     filteredProducts.length > 0 ?
-                                        filteredProducts.map((product) => (
-                                            <ProductCard
-                                                key={product._id}
-                                                id={product._id}
-                                                name={product.title}
-                                                price={product.variants?.[0]?.price}
-                                                image={product.images?.[0]}
-                                            />
-                                        )) : <p>No products found.</p>}
+                                        <div className='flex flex-wrap md:justify-start justify-center'>
+                                            {currentItems.map((product) => (
+                                                <ProductCard
+                                                    key={product._id}
+                                                    id={product._id}
+                                                    name={product.title}
+                                                    price={product.variants?.[0]?.price}
+                                                    image={product.images?.[0]}
+                                                />
+                                            ))}
+                                            <div className='w-full flex justify-center my-5'>
+                                                <ProductPagination
+                                                    count={Math.ceil(filteredProducts.length / itemsPerPage)}
+                                                    page={currentPage}
+                                                    onChange={handlePageChange}
+                                                    variant="outlined"
+                                                    shape="rounded"
+                                                />
+                                            </div>
+                                        </div> : <p>No products found.</p>}
                             </div>
                         </div>
                     </div>

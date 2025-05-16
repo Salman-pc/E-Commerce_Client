@@ -43,7 +43,7 @@ const Header = () => {
 
   return (
     <header className="bg-blue-900 text-white py-4 shadow-md">
-      <div className="container mx-auto px-6 flex items-center justify-between gap-4">
+      <div className="container mx-auto px-6 flex md:flex-row flex-col items-center justify-between gap-4">
         {/* Search Bar */}
         <form
           onSubmit={handleSearch}
