@@ -13,6 +13,7 @@ function WishlistContextApi({ children }) {
         <WishlistContext.Provider
             value={{
                 wishlistOpen,
+                setWishlistOpen,
                 toggleWishlist,
                 deletefromwishlistResponse,setdeltefromwishlistResponse,
                 addwishlistResponse,setaddwishlistResponse

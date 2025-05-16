@@ -3,12 +3,14 @@ import { Route, Routes } from 'react-router-dom'
 import './App.css'
 import Authntication from './Pages/Authntication'
 import HomePage from './Pages/HomePage'
-import Wishlist from './Components/Wishlist'
 import Cart from './Pages/Cart'
 import ProductView from './Pages/ProductView'
+import { useContext } from 'react'
+import { WishlistContext } from './Context/WishlistContextApi'
+import Wishlist from './Components/Wishlist'
 
 function App() {
-
+const { wishlistOpen, setWishlistOpen } = useContext(WishlistContext);
 
   return (
     <div>
@@ -20,6 +22,7 @@ function App() {
          <Route path='/ProductView/:id' element={<ProductView />} />
          
       </Routes>
+       {wishlistOpen && <Wishlist onClose={() => setWishlistOpen(false)} />}
     </div>
   )
 }

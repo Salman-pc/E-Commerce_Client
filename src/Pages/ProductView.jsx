@@ -7,10 +7,12 @@ import Wishlist from '../Components/Wishlist';
 import { WishlistContext } from '../Context/WishlistContextApi';
 import { addTowishlistApi, getSingleProductsApi } from '../services/allApi';
 import serverUrl from '../services/serverUrl';
+import { AddProductContext } from '../Context/ResponseContextApi';
 
 function ProductView() {
 
     const { id } = useParams();
+    const {addProductresponse}=useContext(AddProductContext)
     const { wishlistOpen, toggleWishlist, setaddwishlistResponse } = useContext(WishlistContext);
 
     const [product, setProduct] = useState({});
@@ -98,7 +100,7 @@ function ProductView() {
         };
 
         fetchProduct();
-    }, [id]);
+    }, [id,addProductresponse]);
 
     return (
         <div className='bg-white'>

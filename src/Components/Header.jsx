@@ -7,7 +7,7 @@ import { SearchContext } from "../Context/SearchContextApi";
 import { useNavigate } from "react-router-dom";
 
 const Header = () => {
-  const { toggleWishlist, addwishlistResponse, deletefromwishlistResponse } = useContext(WishlistContext);
+  const { toggleWishlist, setWishlistOpen, addwishlistResponse, deletefromwishlistResponse } = useContext(WishlistContext);
   const { setSearchKeyword } = useContext(SearchContext);
   const navigate = useNavigate();
 
@@ -65,7 +65,7 @@ const Header = () => {
 
         {/* Action Buttons */}
         <div className="flex items-center gap-6 text-sm whitespace-nowrap">
-          <div onClick={toggleWishlist} className="flex items-center gap-1 hover:text-yellow-400 transition">
+          <div onClick={toggleWishlist} className="flex items-center cursor-pointer gap-1 hover:text-yellow-400 transition">
             <FaHeart className="text-xl" />
             <div className="w-4 h-4 bg-yellow-400 rounded-full flex justify-center items-center">{wishlistItems.length > 0 ? wishlistItems.length : 0}</div>
           </div>

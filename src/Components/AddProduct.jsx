@@ -241,7 +241,11 @@ function AddProduct({ isActive, intildataProductdetails }) {
                         {formData.images.map((img, idx) => (
                             <div key={idx} className="relative w-16 h-16">
                                 <img
-                                    src={isActive ? img.url : `${serverUrl}/uploads/${img.url} `}
+                                    src={
+                                        img.file || img.url.startsWith("blob:")
+                                            ? img.url
+                                            : `${serverUrl}/uploads/${img.url}`
+                                    }
                                     alt={`uploaded-${idx}`}
                                     className="w-full h-full rounded border object-cover"
                                 />
@@ -270,7 +274,7 @@ function AddProduct({ isActive, intildataProductdetails }) {
                 </DialogContent>
 
                 <DialogActions sx={{ justifyContent: 'end', pb: 4 }}>
-                    {isActive ? <Button
+                    {isActive === "addproduct" ? <Button
                         onClick={handleSubmit}
                         sx={{
                             backgroundColor: '#facc15',
