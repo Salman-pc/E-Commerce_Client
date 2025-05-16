@@ -4,6 +4,7 @@ This is the frontend of a full-stack E-Commerce web application built using Reac
 
  Features
 🔐 Authentication – Secure login/register for users
+
 🛍️ Product Listing – View all available products with details
 🔍 Search – Real-time search functionality
 ❤️ Wishlist – Add/remove items from your wishlist
