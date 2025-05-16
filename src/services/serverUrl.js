@@ -1,3 +1,3 @@
-const serverUrl ="http://localhost:3000"
+const serverUrl ="https://e-commerce-server-2frr.onrender.com"
 
 export default serverUrl
